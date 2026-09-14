@@ -29,14 +29,14 @@ st.markdown("""
         background-color: #F7F8FA;
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     }
-        html, body {
+    html, body {
         font-family: 'Inter', sans-serif !important;
     }
     p, .stMarkdown, .stMarkdown p {
         color: #1A1D29;
     }
     #MainMenu, footer {visibility: hidden;}
-header {background: transparent !important;}
+    header {background: transparent !important;}
     .block-container {padding-top: 1.2rem; padding-bottom: 2rem; max-width: 1300px;}
 
     .spacer-sm {height: 8px;}
@@ -52,13 +52,13 @@ header {background: transparent !important;}
         margin-bottom: 2px; transition: background-color 0.15s ease; width: 100%;
     }
     section[data-testid="stSidebar"] div[role="radiogroup"] label:hover {background-color: #1E2440;}
-    
-        section[data-testid="stSidebar"] div[role="radiogroup"] label > div:first-child {
+    section[data-testid="stSidebar"] div[role="radiogroup"] label > div:first-child {
         display: none !important;
     }
     section[data-testid="stSidebar"] div[role="radiogroup"] label div[data-testid="stMarkdownContainer"] {
         padding-left: 0 !important;
-    } 
+    }
+
     .kpi-card {
         background: #FFFFFF; border-radius: 14px; padding: 20px 22px;
         box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
@@ -122,6 +122,22 @@ header {background: transparent !important;}
     label {font-size: 12.5px !important; font-weight: 600 !important; color: #4A4E5C !important;}
 
     span[data-baseweb="tag"] {background-color: #EAF1FF !important; color: #2E5FC1 !important;}
+
+    /* ---- Force full opacity, no dimming ---- */
+    [data-stale="true"] {opacity: 1 !important;}
+
+    /* ---- Plotly chart text — force dark, high contrast ---- */
+    .js-plotly-plot text {fill: #1A1D29 !important; opacity: 1 !important;}
+    .js-plotly-plot .xtick text,
+    .js-plotly-plot .ytick text,
+    .js-plotly-plot .xtitle,
+    .js-plotly-plot .ytitle,
+    .js-plotly-plot .legendtext {fill: #1A1D29 !important; opacity: 1 !important;}
+
+    /* ---- st.dataframe styling — force white bg, dark text ---- */
+    [data-testid="stDataFrame"] {background-color: #FFFFFF !important;}
+    [data-testid="stDataFrame"] * {color: #1A1D29 !important;}
+    [data-testid="stDataFrameResizable"] {background-color: #FFFFFF !important;}
 </style>
 """, unsafe_allow_html=True)
 
@@ -228,12 +244,20 @@ def style_chart(fig, height=320):
     fig.update_layout(
         height=height,
         margin=dict(t=20, b=10, l=10, r=10),
-        font=dict(family="Inter, sans-serif", color="#4A4E5C", size=12),
+        font=dict(family="Inter, sans-serif", color="#1A1D29", size=13),
         plot_bgcolor="#FFFFFF",
         paper_bgcolor="#FFFFFF",
-        xaxis=dict(gridcolor="#F0F1F5", showline=True, linecolor="#E5E7EE"),
-        yaxis=dict(gridcolor="#F0F1F5", showline=True, linecolor="#E5E7EE"),
-        legend=dict(font=dict(size=11))
+        xaxis=dict(
+            gridcolor="#F0F1F5", showline=True, linecolor="#D0D3DC",
+            tickfont=dict(color="#1A1D29", size=12),
+            title_font=dict(color="#1A1D29", size=13)
+        ),
+        yaxis=dict(
+            gridcolor="#F0F1F5", showline=True, linecolor="#D0D3DC",
+            tickfont=dict(color="#1A1D29", size=12),
+            title_font=dict(color="#1A1D29", size=13)
+        ),
+        legend=dict(font=dict(size=12, color="#1A1D29"))
     )
     return fig
 
