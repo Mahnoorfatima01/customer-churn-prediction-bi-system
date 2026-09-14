@@ -469,33 +469,41 @@ elif page == "Customer Analytics":
     fdf = df[df['Contract'].isin(contract_filter) & df['PaymentMethod'].isin(payment_filter) & df['InternetService'].isin(internet_filter)]
 
     spacer("sm")
-    k1, k2, k3 = st.columns(3)
-    k1.markdown(f"""<div class="kpi-card" style="height:110px;"><div class="kpi-label">Filtered Customers</div><div class="kpi-value">{len(fdf):,}</div></div>""", unsafe_allow_html=True)
-    k2.markdown(f"""<div class="kpi-card" style="height:110px;"><div class="kpi-label">Avg Monthly Charges</div><div class="kpi-value">${fdf['MonthlyCharges'].mean():.0f}</div></div>""", unsafe_allow_html=True)
-    k3.markdown(f"""<div class="kpi-card" style="height:110px;"><div class="kpi-label">Avg Tenure</div><div class="kpi-value">{fdf['tenure'].mean():.0f} mo</div></div>""", unsafe_allow_html=True)
 
-    spacer("md")
-    tab1, tab2, tab3, tab4 = st.tabs(["Demographics", "Services", "Financial", "Behavior"])
-    with tab1:
-        c1, c2 = st.columns(2)
-        with c1:
-            fig = px.histogram(fdf, x='gender', color='Churn', barmode='group', color_discrete_map=CHURN_COLOR)
-            st.plotly_chart(style_chart(fig), use_container_width=True)
-        with c2:
-            fig = px.histogram(fdf, x='SeniorCitizen', color='Churn', barmode='group', color_discrete_map=CHURN_COLOR)
-            st.plotly_chart(style_chart(fig), use_container_width=True)
-    with tab2:
-        fig = px.histogram(fdf, x='Total_Services', color='Churn', barmode='group', color_discrete_map=CHURN_COLOR)
-        st.plotly_chart(style_chart(fig), use_container_width=True)
-    with tab3:
-        fig = px.histogram(fdf, x='MonthlyCharges', color='Churn', nbins=30, color_discrete_map=CHURN_COLOR)
-        st.plotly_chart(style_chart(fig), use_container_width=True)
-    with tab4:
-        fig = px.histogram(fdf, x='tenure', color='Churn', nbins=30, color_discrete_map=CHURN_COLOR)
-        st.plotly_chart(style_chart(fig), use_container_width=True)
+    if len(fdf) == 0:
+        st.markdown("""<div class="insight-card" style="border-left-color:#F1C40F; height:auto; padding:16px 18px;">
+            <div class="insight-tag" style="color:#B8860B;">No Results</div>
+            <div class="insight-text">No customers match the selected filters. Try adjusting your Contract, Payment Method, or Internet Service selections above.</div></div>""", unsafe_allow_html=True)
+    else:
+        st.caption(f"Showing {len(fdf):,} of {len(df):,} total customers based on your filter selection.")
 
-    with st.expander("View detailed customer table"):
-        st.dataframe(fdf.head(200), use_container_width=True)
+        k1, k2, k3 = st.columns(3)
+        k1.markdown(f"""<div class="kpi-card" style="height:110px;"><div class="kpi-label">Filtered Customers</div><div class="kpi-value">{len(fdf):,}</div></div>""", unsafe_allow_html=True)
+        k2.markdown(f"""<div class="kpi-card" style="height:110px;"><div class="kpi-label">Avg Monthly Charges</div><div class="kpi-value">${fdf['MonthlyCharges'].mean():.0f}</div></div>""", unsafe_allow_html=True)
+        k3.markdown(f"""<div class="kpi-card" style="height:110px;"><div class="kpi-label">Avg Tenure</div><div class="kpi-value">{fdf['tenure'].mean():.0f} mo</div></div>""", unsafe_allow_html=True)
+
+        spacer("md")
+        tab1, tab2, tab3, tab4 = st.tabs(["Demographics", "Services", "Financial", "Behavior"])
+        with tab1:
+            c1, c2 = st.columns(2)
+            with c1:
+                fig = px.histogram(fdf, x='gender', color='Churn', barmode='group', color_discrete_map=CHURN_COLOR)
+                st.plotly_chart(style_chart(fig), use_container_width=True)
+            with c2:
+                fig = px.histogram(fdf, x='SeniorCitizen', color='Churn', barmode='group', color_discrete_map=CHURN_COLOR)
+                st.plotly_chart(style_chart(fig), use_container_width=True)
+        with tab2:
+            fig = px.histogram(fdf, x='Total_Services', color='Churn', barmode='group', color_discrete_map=CHURN_COLOR)
+            st.plotly_chart(style_chart(fig), use_container_width=True)
+        with tab3:
+            fig = px.histogram(fdf, x='MonthlyCharges', color='Churn', nbins=30, color_discrete_map=CHURN_COLOR)
+            st.plotly_chart(style_chart(fig), use_container_width=True)
+        with tab4:
+            fig = px.histogram(fdf, x='tenure', color='Churn', nbins=30, color_discrete_map=CHURN_COLOR)
+            st.plotly_chart(style_chart(fig), use_container_width=True)
+
+        with st.expander("View detailed customer table"):
+            st.dataframe(fdf.head(200), use_container_width=True)
 
 # ============================================
 # PAGE 3: CHURN INTELLIGENCE
@@ -655,6 +663,10 @@ elif page == "Model Performance":
         st.dataframe(comparison_df.style.highlight_max(subset=['Accuracy','Precision','Recall','F1-Score','ROC-AUC','PR-AUC'], color='#E9F9EF'), use_container_width=True)
         fig = px.bar(comparison_df, x='Model', y=['Accuracy', 'Precision', 'Recall', 'F1-Score', 'ROC-AUC'], barmode='group')
         st.plotly_chart(style_chart(fig, height=380), use_container_width=True)
+        st.markdown(f"""<div class="insight-card" style="border-left-color:#4C6FFF; height:auto; padding:14px 18px;">
+            <div class="insight-tag">How to read this</div>
+            <div class="insight-text">{best_model_name} was selected for its ROC-AUC, the metric least sensitive to the dataset's class imbalance.
+            Recall matters most for this business problem since a missed churner (false negative) is costlier than a false alarm.</div></div>""", unsafe_allow_html=True)
 
     model_names = [c.replace('_Pred', '') for c in predictions_df.columns if c.endswith('_Pred')]
     selected_model = st.selectbox("Select model for detailed view", model_names, key="perf_model_select")
@@ -667,6 +679,7 @@ elif page == "Model Performance":
         fig = px.imshow(cm, text_auto=True, color_continuous_scale='Blues',
                          labels=dict(x="Predicted", y="Actual"), x=['No Churn', 'Churn'], y=['No Churn', 'Churn'])
         st.plotly_chart(style_chart(fig, height=400), use_container_width=True)
+        st.caption("Bottom-left = missed churners (costliest error). Top-right = false alarms (low-cost, unnecessary retention offers).")
 
     with tab3:
         fpr, tpr, _ = roc_curve(y_true, y_prob)
@@ -751,3 +764,14 @@ elif page == "Retention Strategy":
         st.warning("These recommendations are pattern-based suggestions derived from historical data. They do not guarantee retention outcomes.")
     else:
         st.error("Logistic Regression predictions not found in saved results.")
+
+# ============================================
+# FOOTER
+# ============================================
+st.markdown("<hr style='margin: 32px 0 14px 0; border-color:#EDEEF2;'>", unsafe_allow_html=True)
+st.markdown(f"""
+    <div style="text-align:center; font-size:12px; color:#9AA0B4; padding-bottom:10px;">
+        ChurnIQ — Customer Retention Intelligence Platform &nbsp;·&nbsp;
+        {len(df):,} customer records &nbsp;·&nbsp; Model: {best_model_name} &nbsp;·&nbsp; Data updated {data_updated}
+    </div>
+""", unsafe_allow_html=True)
