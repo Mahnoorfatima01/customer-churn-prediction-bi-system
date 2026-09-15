@@ -138,8 +138,26 @@ st.markdown("""
     [data-testid="stDataFrame"] {background-color: #FFFFFF !important;}
     [data-testid="stDataFrame"] * {color: #1A1D29 !important;}
     [data-testid="stDataFrameResizable"] {background-color: #FFFFFF !important;}
-        .stSelectbox div[data-baseweb="select"] > div {color: #1A1D29 !important;}
-    .stSelectbox div[data-baseweb="select"] span {color: #1A1D29 !important;}
+        
+/* Selectbox - closed state text */
+.stSelectbox [data-baseweb="select"] div {
+    color: #1A1D29 !important;
+}
+.stSelectbox [data-baseweb="select"] div[class*="singleValue"] {
+    color: #1A1D29 !important;
+}
+/* Selectbox - dropdown menu open state */
+div[data-baseweb="popover"] li {
+    color: #1A1D29 !important;
+    background-color: #FFFFFF !important;
+}
+div[data-baseweb="popover"] li:hover {
+    background-color: #EAF1FF !important;
+}
+/* Number input text */
+.stNumberInput input {
+    color: #1A1D29 !important;
+}
 </style>
 """, unsafe_allow_html=True)
 
