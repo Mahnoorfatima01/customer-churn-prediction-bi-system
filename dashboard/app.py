@@ -138,6 +138,8 @@ st.markdown("""
     [data-testid="stDataFrame"] {background-color: #FFFFFF !important;}
     [data-testid="stDataFrame"] * {color: #1A1D29 !important;}
     [data-testid="stDataFrameResizable"] {background-color: #FFFFFF !important;}
+        .stSelectbox div[data-baseweb="select"] > div {color: #1A1D29 !important;}
+    .stSelectbox div[data-baseweb="select"] span {color: #1A1D29 !important;}
 </style>
 """, unsafe_allow_html=True)
 
